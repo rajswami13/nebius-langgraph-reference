@@ -164,7 +164,7 @@ These issues were found by the conformance kit and are reproducible with the scr
 5. **`parallel_tool_calls=False` is ignored (Qwen3-235B).**
    - **Server behavior:** With three dependent tools (price → calculate → convert), Qwen3-235B returned all three calls in one turn on every try, even with `parallel_tool_calls=False` ([evidence](evidence/parallel-tool-calls-probe.txt)). DeepSeek-V4.1-Flash, GLM-5.3, Kimi-K3, gpt-oss-120b and muse-spark-open each returned one call per turn. That is consistent with honoring the flag, though it can't be told apart from simply calling tools one at a time.
    - **Effect:** The model guesses the inputs to later steps before it has seen earlier results. Found while rehearsing a "add a currency tool" change: the agent answered $2,592 instead of $2,016.
-   - **Workaround:** The agent's system prompt in [graph.py](src/nebius_agent/graph.py) tells the model to call one tool at a time and wait for each result. That produced 6 correct answers in 6 runs.
+   - **Workaround:** The agent's system prompt in [graph.py](src/nebius_agent/graph.py) tells the model to call one tool at a time and wait for each result. That produced 6 correct answers in 6 runs. This is a prompt-level mitigation; a production agent should enforce tool dependencies in the workflow itself.
    - **Reproduce:** `uv run python scripts/probe_parallel_tool_calls.py 3 <model>`.
 
 ## Running on Nebius infrastructure
