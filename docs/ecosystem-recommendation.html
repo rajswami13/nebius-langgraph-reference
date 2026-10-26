@@ -75,26 +75,26 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
     --accent: #2c55d6; --accent-soft: #e7edfc; --bad: #b4322a; --bad-soft: #fbeceb; color-scheme: light;
   }
   * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-  body { background: #fff; font-size: 9.6px; line-height: 1.38; padding: 0; }
+  body { background: #fff; font-size: 10.5px; line-height: 1.36; padding: 0; }
   .memo { max-width: none; border: 0; border-radius: 0; padding: 0; gap: 10px; }
   header { gap: 5px; padding-bottom: 7px; }
-  .meta { font-size: 8.5px; }
-  h1 { font-size: 19px; }
-  h2 { font-size: 9px; }
+  .meta { font-size: 9.4px; }
+  h1 { font-size: 21px; }
+  h2 { font-size: 10px; }
   section { gap: 5px; }
-  .lede { font-size: 10.6px; }
-  .note { font-size: 8.8px; }
+  .lede { font-size: 11.4px; }
+  .note { font-size: 9.8px; }
   p { max-width: none; }
   .table-wrap { overflow: visible; }
-  table, .defects table, .partners table, .staff table { min-width: 0; font-size: 8.9px; }
-  th, td { padding: 3.5px 6px; }
-  th { font-size: 8px; }
-  td.name { font-size: 10px; }
-  td.name span { font-size: 8px; margin-top: 2px; }
-  .tag { font-size: 7.5px; padding: 0 4px; }
-  .metrics li { font-size: 8.8px; padding: 1px 6px; }
-  .ask { padding: 9px 12px; gap: 4px; }
-  .ask .big { font-size: 12px; }
+  table, .defects table, .partners table, .staff table { min-width: 0; font-size: 10px; }
+  th, td { padding: 3.5px 7px; }
+  th { font-size: 8.8px; }
+  td.name { font-size: 11px; }
+  td.name span { font-size: 9px; margin-top: 2px; }
+  .tag { font-size: 8.4px; padding: 0 4px; }
+  .metrics li { font-size: 9.8px; padding: 1px 6px; }
+  .ask { padding: 10px 14px; gap: 5px; }
+  .ask .big { font-size: 13.5px; }
   section, table, tr, .ask { break-inside: avoid; }
 }
 </style>
@@ -113,8 +113,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <table>
         <thead><tr><th>Defect</th><th>Where</th><th>Effect</th></tr></thead>
         <tbody>
-          <tr><td>Usage repeated on every streamed chunk</td><td class="where"><span class="tag server">Server</span>3 models</td><td>SDK-reported token counts inflated 6–39×. Invoices not examined.</td></tr>
-          <tr><td><code>tool_choice</code> ignored, with no error</td><td class="where"><span class="tag server">Server</span>Kimi-K3, gpt-oss</td><td>Honored 0–2 times in 10. "Must call a tool" steps fail silently.</td></tr>
+          <tr><td>Usage repeated on every streamed chunk</td><td class="where"><span class="tag server">Server</span>3 models</td><td>SDK token counts inflated 6–39× (invoices not examined)</td></tr>
+          <tr><td><code>tool_choice</code> ignored, with no error</td><td class="where"><span class="tag server">Server</span>Kimi-K3, gpt-oss</td><td>Honored 0–2 of 10; "must call a tool" steps fail silently</td></tr>
           <tr><td>Two structured-output modes crash; streams report no usage</td><td class="where"><span class="tag client">Our SDK</span><code>langchain-nebius</code> 0.1.3</td><td>Code ported from <code>ChatOpenAI</code> breaks</td></tr>
           <tr><td>Answers without calling tools</td><td class="where"><span class="tag model">Model</span>gemma-3-27b</td><td>Invented data</td></tr>
         </tbody>
@@ -131,24 +131,24 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <tbody>
           <tr>
             <td class="name">1. LangChain / LangGraph<span>Q1</span></td>
-            <td>The partnership is announced; the SDK under it has the defects above.</td>
-            <td>A fixed <code>langchain-nebius</code> that Nebius maintains, in LangChain's integration tests; Deep Agents profiles.</td>
-            <td>A named owner with a bug SLA, credits for Deep Agents users, launch co-marketing.</td>
-            <td>Placement as a recommended open-model provider; joint launches.</td>
+            <td>Partnership announced; its SDK has the defects above.</td>
+            <td>A fixed, Nebius-maintained <code>langchain-nebius</code> in LangChain's integration tests; Deep Agents profiles.</td>
+            <td>Named owner with a bug SLA; Deep Agents credits; co-marketing.</td>
+            <td>Recommended open-model provider; joint launches.</td>
           </tr>
           <tr>
             <td class="name">2. Vercel AI SDK + Gateway<span>Start Q1 · launch Q2</span></td>
-            <td>Reaches TypeScript developers. Gateway lists 8 Nebius models (snapshot in the repo), and earns us revenue only when it routes traffic to us.</td>
-            <td>Our agent-capable catalog on Gateway, day-0 listings, a certified OpenAI-compatible path, templates.</td>
-            <td>Wholesale pricing or a revenue share; committed rate limits.</td>
-            <td>Routing preference for models we serve; distribution of the templates.</td>
+            <td>Reaches TypeScript developers. Gateway lists 8 Nebius models but pays us only when it routes to us.</td>
+            <td>Agent-capable catalog on Gateway, day-0 listings, a certified path, templates.</td>
+            <td>Wholesale pricing or revenue share; committed rate limits.</td>
+            <td>Routing preference; template distribution.</td>
           </tr>
           <tr>
             <td class="name">3. Cline<span>Q2 · OpenCode as the alternate</span></td>
-            <td>Coding agents rely heavily on tool calls, where the server defects hurt most.</td>
-            <td>Certified coding models, a Nebius preset, latency tuning.</td>
-            <td>User credits, fast-inference capacity, a revenue share.</td>
-            <td>Placement as a recommended provider.</td>
+            <td>Coding agents live on tool calls, where server defects hurt most.</td>
+            <td>Certified coding models, Nebius preset, latency tuning.</td>
+            <td>User credits, fast-inference capacity, revenue share.</td>
+            <td>Recommended-provider placement.</td>
           </tr>
         </tbody>
       </table>
@@ -161,14 +161,15 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       <table>
         <thead><tr><th>FDE</th><th>Q1 2027</th><th>Q2 2027</th></tr></thead>
         <tbody>
-          <tr><td><b>Python</b></td><td>LangChain</td><td>Maintain LangChain; PydanticAI, CrewAI, OpenAI Agents SDK*</td></tr>
+          <tr><td><b>Python</b></td><td>LangChain</td><td>Maintain LangChain first; then PydanticAI, CrewAI, OpenAI Agents SDK*</td></tr>
           <tr><td><b>TypeScript</b></td><td>Vercel</td><td>Vercel launch, then Mastra</td></tr>
           <tr><td><b>Coding agents</b></td><td>Tool-call quality for coding models</td><td>Cline, then OpenCode</td></tr>
           <tr><td><b>Platform</b></td><td>Nightly conformance runs, models × frameworks</td><td>Public compatibility page; partner self-certification</td></tr>
         </tbody>
       </table>
     </div>
-    <p><b>Partners 4–10</b> get limited enablement: they run our test kit in their own CI, with at most one FDE-week each.</p>
+    <p><b>Proposed milestones.</b> Q1: LangChain certified and Vercel pilot running. Q2: Vercel and Cline certified.</p>
+    <p><b>Partners 4–10</b> get limited enablement: the partner owns the implementation and runs our test kit in its own CI, with at most one FDE-week each. Maintaining shipped integrations always comes first.</p>
     <p class="note">*Token Factory serves the stateless Responses API. Multi-turn and tool behavior are untested, so this estimate is provisional.</p>
     <p><b>Success per partner</b>, with targets set in week 2:</p>
     <ul class="metrics">
@@ -187,7 +188,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   <section class="ask">
     <h2>One ask</h2>
     <p class="big">A capability-based release gate, owned by the inference team.</p>
-    <p>Each model must pass the checks for the capabilities it advertises before launch, and models marketed for agents must also pass the full agent-ready suite. For a severity-1 compatibility bug, the inference team ships a mitigation within 48 hours and a permanent fix within 2 weeks. Exceptions need the inference lead's sign-off. Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.</p>
+    <p>Each model must pass the checks for the capabilities it advertises before launch, and models marketed for agents must also pass the full agent-ready suite. For a severity-1 compatibility bug, the inference team ships a mitigation within 48 hours and a permanent fix within 2 weeks (proposed targets, to agree with the inference team). Exceptions need the inference lead's sign-off. Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.</p>
   </section>
 
   <p class="note">Evidence, code and the full compatibility matrix: <a href="https://github.com/rajswami13/nebius-langgraph-reference" target="_blank" rel="noopener">github.com/rajswami13/nebius-langgraph-reference</a></p>

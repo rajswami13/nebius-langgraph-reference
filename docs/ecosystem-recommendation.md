@@ -29,12 +29,14 @@ The asks are negotiating goals; none is agreed yet.
 
 | FDE | Q1 2027 | Q2 2027 |
 |---|---|---|
-| Python | LangChain | Maintain LangChain; PydanticAI, CrewAI, OpenAI Agents SDK* |
+| Python | LangChain | Maintain LangChain first; then PydanticAI, CrewAI, OpenAI Agents SDK* |
 | TypeScript | Vercel | Vercel launch, then Mastra |
 | Coding agents | Tool-call quality for coding models | Cline, then OpenCode |
 | Platform | Nightly conformance runs, models × frameworks | Public compatibility page; partner self-certification |
 
-**Partners 4–10** get limited enablement: they run our test kit in their own CI, with at most one FDE-week each.
+**Proposed milestones.** Q1: LangChain certified and Vercel pilot running. Q2: Vercel and Cline certified.
+
+**Partners 4–10** get limited enablement: the partner owns the implementation and runs our test kit in its own CI, with at most one FDE-week each. Maintaining shipped integrations always comes first.
 
 \*Token Factory serves the stateless Responses API. Multi-turn and tool behavior are untested, so this estimate is provisional.
 
@@ -53,7 +55,7 @@ We choose depth over breadth: one of the four FDEs builds the platform instead o
 **A capability-based release gate, owned by the inference team.**
 - Each model must pass the checks for the capabilities it advertises before launch.
 - Models marketed for agents must also pass the full agent-ready suite.
-- For a severity-1 compatibility bug, the inference team ships a mitigation within 48 hours and a permanent fix within 2 weeks.
+- For a severity-1 compatibility bug, the inference team ships a mitigation within 48 hours and a permanent fix within 2 weeks (proposed targets, to agree with the inference team).
 - Exceptions need the inference lead's sign-off.
 
 Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.
