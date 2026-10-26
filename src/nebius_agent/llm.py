@@ -20,10 +20,12 @@ class NebiusChatOpenAI(ChatOpenAI):
 
     Some Token Factory models (e.g. Qwen3-235B, gpt-oss-120b) attach *cumulative*
     usage to every streamed chunk instead of only the final one. LangChain sums
-    usage across chunks, so streamed calls over-report tokens 4-10x. Per the
-    OpenAI spec, usage belongs only on the final chunk with empty `choices`, so
-    we drop it from content chunks. Spec-compliant models are unaffected.
-    See conformance/test_streaming.py::test_stream_usage_matches_invoke.
+    usage across chunks, so streamed calls over-report tokens (6-39x in our probes,
+    depending on model and response length). Per the OpenAI spec, usage belongs
+    only on the final chunk with empty `choices`, so we drop it from content
+    chunks. Spec-compliant models are unaffected. See
+    conformance/test_streaming.py::test_stream_usage_counted_once and
+    tests/test_offline.py.
     """
 
     def _convert_chunk_to_generation_chunk(self, chunk, default_chunk_class, base_generation_info):

@@ -1,8 +1,8 @@
 endpoint: https://api.tokenfactory.nebius.com/v1  runs per model: 3
 
 Qwen/Qwen3-235B-A22B-Instruct-2507       parallel_tool_calls=False -> tool calls per turn [3, 3, 3]  IGNORED
-deepseek-ai/DeepSeek-V4.1-Flash          parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  honored
-zai-org/GLM-5.3                          parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  honored
-moonshotai/Kimi-K3                       parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  honored
-openai/gpt-oss-120b                      parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  honored
-meta-models/muse-spark-open              parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  honored
+deepseek-ai/DeepSeek-V4.1-Flash          parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  not violated in 3 runs
+zai-org/GLM-5.3                          parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  not violated in 3 runs
+moonshotai/Kimi-K3                       parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  not violated in 3 runs
+openai/gpt-oss-120b                      parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  not violated in 3 runs
+meta-models/muse-spark-open              parallel_tool_calls=False -> tool calls per turn [1, 1, 1]  not violated in 3 runs

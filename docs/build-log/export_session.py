@@ -15,7 +15,6 @@ RESULT_CHARS = 700
 REDACT = [
     (re.compile(r"v1\.[A-Za-z0-9._\-]{20,}"), "[REDACTED_API_KEY]"),
     (re.compile(r"gh[opsu]_[A-Za-z0-9]{10,}"), "[REDACTED_GITHUB_TOKEN]"),
-    (re.compile(r"Yqv89jCsskJbX7BV"), "[REDACTED_PROMO_CODE]"),
     (re.compile(r"[A-Za-z0-9._%+-]+@gmail\.com"), "[REDACTED_EMAIL]"),
 ]
 if os.getenv("NEBIUS_API_KEY"):
@@ -36,13 +35,13 @@ def short(text: str, n: int = RESULT_CHARS) -> str:
 def tool_call(block: dict) -> str:
     inp = block.get("input", {})
     name = block["name"]
-    desc = inp.get("description", "")
-    detail = inp.get("command") or inp.get("file_path") or inp.get("query") or inp.get("url") or inp.get("skill") or ""
+    desc = clean(str(inp.get("description", "")))
+    detail = clean(str(inp.get("command") or inp.get("file_path") or inp.get("query") or inp.get("url") or inp.get("skill") or ""))
     head = f"**🔧 {name}**" + (f" · {desc}" if desc else "")
     if name in ("Write", "Edit"):
         size = len(inp.get("content") or inp.get("new_string") or "")
         return f"{head}\n\n`{detail}` ({size} characters written)"
-    return f"{head}\n\n```\n{clean(str(detail))}\n```" if detail else head
+    return f"{head}\n\n```\n{detail}\n```" if detail else head
 
 
 def result_text(block: dict) -> str:
@@ -75,7 +74,7 @@ def main(path: str) -> None:
                 if text:
                     out += [f"---\n\n### 👤 User · {rec.get('timestamp', '')[:16]}", "", text, ""]
             elif kind == "user" and t == "document":
-                title = (block.get("title") or block.get("source", {}).get("media_type", "document"))
+                title = clean(str(block.get("title") or block.get("source", {}).get("media_type", "document")))
                 out += [f"*[User attached a document: {title}]*", ""]
             elif kind == "assistant" and t == "text":
                 text = clean(block["text"])

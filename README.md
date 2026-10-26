@@ -139,7 +139,7 @@ Results from the latest run (full matrix, provenance and failure details in [con
 
 Not every model passing every check is expected: the matrix shows which models to pick for agents.
 
-**Recommended for agents:** Qwen3-235B-A22B-Instruct-2507 (fast, passes everything), DeepSeek-V4.1-Flash, GLM-5.3 or muse-spark-open.
+**Recommended for agents:** Qwen3-235B-A22B-Instruct-2507 (fast; passes the tool-calling and structured-output checks, but needs `NebiusChatOpenAI` for correct stream usage and the one-tool-at-a-time prompt rule, see known issues 1 and 5), DeepSeek-V4.1-Flash, GLM-5.3 or muse-spark-open.
 
 ## Known issues
 

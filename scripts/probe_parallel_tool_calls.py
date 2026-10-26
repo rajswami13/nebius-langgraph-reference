@@ -1,7 +1,8 @@
 """Check whether parallel_tool_calls=False is honored, per model, on the raw OpenAI API.
 
 The question needs three dependent tools (price -> calculate -> convert). A model that
-honors parallel_tool_calls=False returns at most one tool call per turn.
+honors parallel_tool_calls=False returns at most one tool call per turn. A clean run
+only means no violation was observed; it does not prove the parameter is enforced.
 
     uv run python scripts/probe_parallel_tool_calls.py 3 Qwen/Qwen3-235B-A22B-Instruct-2507 zai-org/GLM-5.3
 """
@@ -37,5 +38,5 @@ for model in sys.argv[2:]:
         ).choices[0].message.tool_calls or [])
         for _ in range(runs)
     ]
-    verdict = "honored" if max(counts) <= 1 else "IGNORED"
+    verdict = f"not violated in {runs} runs" if max(counts) <= 1 else "IGNORED"
     print(f"{model:40s} parallel_tool_calls=False -> tool calls per turn {counts}  {verdict}")
