@@ -1,9 +1,9 @@
 # Conformance results: `langchain-nebius` client on Token Factory
 
-- **Date (UTC):** 2026-10-26 05:51
+- **Date (UTC):** 2026-10-26 05:53
 - **Client:** `langchain-nebius`
-- **Commit:** `df9913d (uncommitted changes)`
-- **Endpoint:** `https://api.tokenfactory.nebius.com/v1`
+- **Commit:** `05aee37 (uncommitted changes)`
+- **Endpoint:** `https://api.studio.nebius.ai/v1/ (package default)`
 - **Packages:** `langchain-core==1.7.0`, `langchain-openai==1.7.2`, `langgraph==1.2.17`, `openai==3.37.0`, `langchain-nebius==0.1.3`
 - **Command:** `pytest conformance -n 8 -p no:cacheprovider -k not server_usage` with `NEBIUS_CLIENT=langchain-nebius`
 - **Models:** `Qwen/Qwen3-235B-A22B-Instruct-2507`, `deepseek-ai/DeepSeek-V4.1-Flash`, `zai-org/GLM-5.3`

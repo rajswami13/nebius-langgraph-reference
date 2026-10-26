@@ -128,7 +128,7 @@ Results from the latest run (full matrix, provenance and failure details in [con
 |---|---|---|---|---|---|---|---|
 | single tool call | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | parallel tool calls | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| forced `tool_choice` | ✅ | ❌ | ✅ | ✅ | ❌ | ✅ | ⚠️ |
+| forced `tool_choice` (10 tries) | ✅ 10/10 | ❌ 3/10, 0/10 | ✅ | ✅ | ❌ 0/10 | ✅ | ⚠️ |
 | tool result round-trip | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | LangGraph agent end to end | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | structured output (all 3 methods) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -151,8 +151,12 @@ These issues were found by the conformance kit and are reproducible with the scr
    - **Fix:** `NebiusChatOpenAI` in [llm.py](src/nebius_agent/llm.py) drops usage from content chunks. [tests/test_offline.py](tests/test_offline.py) shows the fix and the bug with synthetic chunks.
    - **Reproduce:** `uv run python scripts/probe_stream_usage.py <model>`.
    - **Server-side fix needed:** yes.
-2. **`tool_choice` is silently ignored (Kimi-K3, gpt-oss-120b).**
-   - **Server behavior:** The request is accepted, but the model may answer in plain text instead of calling the required tool. No error is returned.
+2. **`tool_choice` is silently ignored, fully or intermittently (Kimi-K3, gpt-oss-120b).**
+   - **Server behavior:** The request is accepted, but the model often answers in plain text instead of calling the required tool, and no error is returned. Over 10 tries ([evidence](evidence/tool-choice-probe.txt)):
+     - Kimi-K3 honored a named tool 3 times and "must call a tool" 0 times.
+     - gpt-oss-120b honored neither.
+     - Qwen3-235B honored both 10 out of 10 times.
+   - **Note:** Because it's intermittent, a single conformance run can show Kimi-K3 passing. Use `scripts/probe_tool_choice.py` for rates.
    - **Effect:** This breaks `with_structured_output(method="function_calling")` patterns that rely on forcing, as well as "must call a tool" agent steps.
    - **Workaround:** Use `method="json_schema"` for structured output with these models.
 3. **gpt-oss-120b calls tools one at a time** instead of in parallel. It is functionally fine, but it adds latency to agent loops.
@@ -196,7 +200,7 @@ src/nebius_agent/   llm.py (model factory + fix) · tools.py · graph.py (agent)
 tests/              offline unit tests (run in CI, no API key)
 conformance/        cases.py (neutral specs) · test_tool_calling.py · test_structured_output.py · test_streaming.py
 conformance/results/  latest live results per client, with provenance and failure details
-scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py (usage bug repro)
+scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py · probe_tool_choice.py (issue repros)
 evidence/           saved probe output backing the known-issues claims
 traces/             sample trace (console tree + OTel JSON lines)
 ```
