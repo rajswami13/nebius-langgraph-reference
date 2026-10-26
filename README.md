@@ -208,3 +208,7 @@ traces/             sample trace (console tree + OTel JSON lines)
 ## Ecosystem recommendation (Part 2)
 
 The one-page recommendation to the Nebius exec team is in [docs/ecosystem-recommendation.md](docs/ecosystem-recommendation.md). It covers which three partners to prioritize, how to staff 4 FDEs, the trade-off, and one ask.
+
+## How this was built
+
+This was built with Claude Code running Claude Opus 5.5. [docs/build-log/BUILD_NOTES.md](docs/build-log/BUILD_NOTES.md) records the decisions, the corrections after an external review, and the validation status.
