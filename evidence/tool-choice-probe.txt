@@ -1,8 +1,8 @@
 endpoint: https://api.tokenfactory.nebius.com/v1  prompt: 'Hi there!'  runs per mode: 10
 
-moonshotai/Kimi-K3                       named tool_choice=get_time       honored 3/10
-moonshotai/Kimi-K3                       tool_choice="any" (required)     honored 0/10
-openai/gpt-oss-120b                      named tool_choice=get_time       honored 0/10
-openai/gpt-oss-120b                      tool_choice="any" (required)     honored 0/10
+moonshotai/Kimi-K3                       named tool_choice=get_time       honored 2/10  (no call 8)
+moonshotai/Kimi-K3                       tool_choice="any" (required)     honored 0/10  (no call 10)
+openai/gpt-oss-120b                      named tool_choice=get_time       honored 0/10  (no call 10)
+openai/gpt-oss-120b                      tool_choice="any" (required)     honored 0/10  (no call 10)
 Qwen/Qwen3-235B-A22B-Instruct-2507       named tool_choice=get_time       honored 10/10
 Qwen/Qwen3-235B-A22B-Instruct-2507       tool_choice="any" (required)     honored 10/10

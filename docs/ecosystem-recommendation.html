@@ -3,7 +3,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
 <style>
-/* Layout: a single-column exec memo, ~820px sheet; three compact tables carry the substance, the ask is set apart at the end */
+/* Layout: a single-column exec memo, ~920px sheet; three compact tables carry the substance, the ask is set apart at the end. Prints to one A4 page. */
 :root {
   --paper: #f6f7f9;
   --sheet: #ffffff;
@@ -34,46 +34,75 @@ body {
   padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
   padding-block: 32px 56px;
 }
-.memo { max-width: 860px; margin: 0 auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: clamp(18px, 4.5vw, 44px); display: grid; gap: 26px; }
-header { display: grid; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 18px; }
+.memo { max-width: 920px; margin: 0 auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: clamp(18px, 4vw, 40px); display: grid; gap: 24px; }
+header { display: grid; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 16px; }
 .meta { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
 .meta b { color: var(--ink); font-weight: 600; }
-h1 { font-family: var(--display); font-weight: 700; font-size: clamp(25px, 4.2vw, 34px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(24px, 4vw, 32px); line-height: 1.1; margin: 0; text-wrap: balance; }
 h2 { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0; }
-p { margin: 0; max-width: 72ch; }
-section { display: grid; gap: 10px; }
-.lede { font-size: 16.5px; }
+p { margin: 0; max-width: 76ch; }
+section { display: grid; gap: 10px; min-width: 0; }
+.lede { font-size: 16px; }
 .lede strong { background: var(--accent-soft); padding: 0 3px; border-radius: 2px; }
 .note { font-size: 13px; color: var(--muted); }
 code { font-family: var(--mono); font-size: .86em; }
 .table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; }
 table { border-collapse: collapse; width: 100%; font-size: 13px; }
-.defects table { min-width: 600px; }
-.partners table { min-width: 820px; }
-.staff table { min-width: 560px; }
-th, td { text-align: left; vertical-align: top; padding: 8px 10px; border-bottom: 1px solid var(--rule); }
+.defects table { min-width: 560px; }
+.partners table { min-width: 700px; }
+.staff table { min-width: 520px; }
+th, td { text-align: left; vertical-align: top; padding: 7px 10px; border-bottom: 1px solid var(--rule); }
 th { font-family: var(--display); font-weight: 600; font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--paper); }
 tr:last-child td { border-bottom: 0; }
-td.name { font-family: var(--display); font-weight: 600; font-size: 15px; line-height: 1.2; }
-td.name span { display: block; font-family: var(--mono); font-weight: 400; font-size: 11.5px; color: var(--muted); margin-top: 4px; }
+td.name { font-family: var(--display); font-weight: 600; font-size: 14.5px; line-height: 1.2; width: 14%; }
+td.name span { display: block; font-family: var(--mono); font-weight: 400; font-size: 11px; color: var(--muted); margin-top: 4px; }
 .where { white-space: nowrap; }
 .tag { display: inline-block; font-size: 10.5px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; margin-right: 4px; }
 .tag.server { background: var(--bad-soft); color: var(--bad); }
 .tag.client { background: var(--accent-soft); color: var(--accent); }
 .tag.model { background: var(--paper); color: var(--muted); border: 1px solid var(--rule); }
 .metrics { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
-.metrics li { border: 1px solid var(--rule); border-radius: 3px; padding: 3px 9px; font-size: 13px; }
-.ask { background: var(--ink); color: var(--sheet); border-radius: 4px; padding: 20px 22px; display: grid; gap: 8px; }
+.metrics li { border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; font-size: 12.5px; }
+.ask { background: var(--ink); color: var(--sheet); border-radius: 4px; padding: 18px 22px; display: grid; gap: 8px; }
 .ask h2 { color: var(--sheet); opacity: .75; }
-.ask .big { font-family: var(--display); font-size: 20px; font-weight: 600; line-height: 1.25; }
+.ask .big { font-family: var(--display); font-size: 19px; font-weight: 600; line-height: 1.25; }
 a { color: var(--accent); }
-.ask a { color: inherit; }
 a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+@page { size: A4; margin: 10mm 11mm; }
+@media print {
+  :root, :root[data-theme="dark"], :root:not([data-theme="light"]) {
+    --paper: #f3f5f8; --sheet: #ffffff; --ink: #151a22; --muted: #4f5968; --rule: #d5dae2;
+    --accent: #2c55d6; --accent-soft: #e7edfc; --bad: #b4322a; --bad-soft: #fbeceb; color-scheme: light;
+  }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  body { background: #fff; font-size: 9.6px; line-height: 1.38; padding: 0; }
+  .memo { max-width: none; border: 0; border-radius: 0; padding: 0; gap: 10px; }
+  header { gap: 5px; padding-bottom: 7px; }
+  .meta { font-size: 8.5px; }
+  h1 { font-size: 19px; }
+  h2 { font-size: 9px; }
+  section { gap: 5px; }
+  .lede { font-size: 10.6px; }
+  .note { font-size: 8.8px; }
+  p { max-width: none; }
+  .table-wrap { overflow: visible; }
+  table, .defects table, .partners table, .staff table { min-width: 0; font-size: 8.9px; }
+  th, td { padding: 3.5px 6px; }
+  th { font-size: 8px; }
+  td.name { font-size: 10px; }
+  td.name span { font-size: 8px; margin-top: 2px; }
+  .tag { font-size: 7.5px; padding: 0 4px; }
+  .metrics li { font-size: 8.8px; padding: 1px 6px; }
+  .ask { padding: 9px 12px; gap: 4px; }
+  .ask .big { font-size: 12px; }
+  section, table, tr, .ask { break-inside: avoid; }
+}
 </style>
 
 <main class="memo">
   <header>
-    <div class="meta"><span>To <b>Nebius exec team</b></span><span>From <b>Head of FDE, Ecosystem</b></span><span>Horizon <b>Q1–Q2 2027</b></span></div>
+    <div class="meta"><span>To <b>Nebius exec team</b></span><span>From <b>Head of FDE, Ecosystem</b></span><span>Horizon <b>Q1–Q2 2027, assuming a January kickoff</b></span></div>
     <h1>Listed is not working: three partners to certify, and the system that keeps ten working</h1>
   </header>
 
@@ -86,7 +115,7 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
         <thead><tr><th>Defect</th><th>Where</th><th>Effect</th></tr></thead>
         <tbody>
           <tr><td>Usage repeated on every streamed chunk</td><td class="where"><span class="tag server">Server</span>3 models</td><td>SDK-reported token counts inflated 6–39×. Invoices not examined.</td></tr>
-          <tr><td><code>tool_choice</code> ignored, with no error</td><td class="where"><span class="tag server">Server</span>Kimi-K3, gpt-oss</td><td>Honored 0–3 times in 10. "Must call a tool" steps fail silently.</td></tr>
+          <tr><td><code>tool_choice</code> ignored, with no error</td><td class="where"><span class="tag server">Server</span>Kimi-K3, gpt-oss</td><td>Honored 0–2 times in 10. "Must call a tool" steps fail silently.</td></tr>
           <tr><td>Two structured-output modes crash; streams report no usage</td><td class="where"><span class="tag client">Our SDK</span><code>langchain-nebius</code> 0.1.3</td><td>Code ported from <code>ChatOpenAI</code> breaks</td></tr>
           <tr><td>Answers without calling tools</td><td class="where"><span class="tag model">Model</span>gemma-3-27b</td><td>Invented data</td></tr>
         </tbody>
@@ -96,10 +125,10 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   <section class="partners">
     <h2>Three partners, in order</h2>
-    <p class="note">The order reflects our assumptions about developer reach and token volume. We validate it in month 1 with partner-tagged usage.</p>
+    <p class="note">The order reflects our assumptions about developer reach and token volume. We validate it in month 1 with partner-tagged usage. The asks are negotiating goals; none is agreed yet.</p>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Partner</th><th>Why</th><th>We deliver</th><th>Nebius offers</th><th>Partner commits</th></tr></thead>
+        <thead><tr><th>Partner</th><th>Why</th><th>We deliver</th><th>Nebius offers</th><th>We ask of the partner</th></tr></thead>
         <tbody>
           <tr>
             <td class="name">1. LangChain / LangGraph<span>Q1</span></td>
@@ -110,8 +139,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
           </tr>
           <tr>
             <td class="name">2. Vercel AI SDK + Gateway<span>Start Q1 · launch Q2</span></td>
-            <td>Reaches TypeScript developers. Gateway traffic earns revenue only when routed to us. Gateway lists 8 Nebius models (25 Oct 2026).</td>
-            <td>Our agent-capable catalog on Gateway, day-0 open-model listings, a certified OpenAI-compatible path, templates.</td>
+            <td>Reaches TypeScript developers. Gateway lists 8 Nebius models (snapshot in the repo), and earns us revenue only when it routes traffic to us.</td>
+            <td>Our agent-capable catalog on Gateway, day-0 listings, a certified OpenAI-compatible path, templates.</td>
             <td>Wholesale pricing or a revenue share; committed rate limits.</td>
             <td>Routing preference for models we serve; distribution of the templates.</td>
           </tr>
@@ -141,8 +170,8 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
       </table>
     </div>
     <p><b>Partners 4–10</b> get limited enablement: they run our test kit in their own CI, with at most one FDE-week each.</p>
-    <p class="note">*Token Factory serves the stateless Responses API. Multi-turn and tool behavior are untested, so the Agents SDK estimate is provisional.</p>
-    <p><b>Success, per partner</b> (targets agreed with each partner in week 2):</p>
+    <p class="note">*Token Factory serves the stateless Responses API. Multi-turn and tool behavior are untested, so this estimate is provisional.</p>
+    <p><b>Success per partner</b>, with targets set in week 2:</p>
     <ul class="metrics">
       <li>Released upstream, docs live</li>
       <li>Activated developers (partner-tagged keys)</li>
@@ -153,13 +182,13 @@ a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
   <section>
     <h2>The trade-off</h2>
-    <p>We choose depth over breadth: one of the four FDEs builds the platform instead of landing a fourth partner. For two quarters, partners 4–10 get only limited enablement, and a competitor may win the default slot in Mastra or n8n first. We accept that because a broken integration costs more trust than a missing one.</p>
+    <p>We choose depth over breadth: one of the four FDEs builds the platform instead of landing a fourth partner. Partners 4–10 get only limited enablement for two quarters, and a competitor may win the default slot in Mastra or n8n first. We accept that, because a broken integration costs more trust than a missing one.</p>
   </section>
 
   <section class="ask">
     <h2>One ask</h2>
     <p class="big">A capability-based release gate, owned by the inference team.</p>
-    <p>Each model must pass the checks for the capabilities it advertises before launch, and models marketed for agents must pass the full agent-ready suite. Severity-1 compatibility bugs get fixed within 2 weeks, and exceptions need the inference lead's sign-off. Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.</p>
+    <p>Each model must pass the checks for the capabilities it advertises before launch, and models marketed for agents must also pass the full agent-ready suite. For a severity-1 compatibility bug, the inference team ships a mitigation within 48 hours and a permanent fix within 2 weeks. Exceptions need the inference lead's sign-off. Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.</p>
   </section>
 
   <p class="note">Evidence, code and the full compatibility matrix: <a href="https://github.com/rajswami13/nebius-langgraph-reference" target="_blank" rel="noopener">github.com/rajswami13/nebius-langgraph-reference</a></p>

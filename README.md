@@ -128,7 +128,7 @@ Results from the latest run (full matrix, provenance and failure details in [con
 |---|---|---|---|---|---|---|---|
 | single tool call | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | parallel tool calls | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| forced `tool_choice` (10 tries) | ✅ 10/10 | ❌ 3/10, 0/10 | ✅ | ✅ | ❌ 0/10 | ✅ | ⚠️ |
+| forced `tool_choice` (10 tries) | ✅ 10/10 | ❌ 2/10, 0/10 | ✅ | ✅ | ❌ 0/10 | ✅ | ⚠️ |
 | tool result round-trip | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | LangGraph agent end to end | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | structured output (all 3 methods) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
@@ -153,7 +153,7 @@ These issues were found by the conformance kit and are reproducible with the scr
    - **Server-side fix needed:** yes.
 2. **`tool_choice` is silently ignored, fully or intermittently (Kimi-K3, gpt-oss-120b).**
    - **Server behavior:** The request is accepted, but the model often answers in plain text instead of calling the required tool, and no error is returned. Over 10 tries ([evidence](evidence/tool-choice-probe.txt)):
-     - Kimi-K3 honored a named tool 3 times and "must call a tool" 0 times.
+     - Kimi-K3 honored a named tool 2 times and "must call a tool" 0 times. Every failure was no tool call at all, never a wrong tool.
      - gpt-oss-120b honored neither.
      - Qwen3-235B honored both 10 out of 10 times.
    - **Note:** Because it's intermittent, a single conformance run can show Kimi-K3 passing. Use `scripts/probe_tool_choice.py` for rates.
@@ -207,7 +207,7 @@ traces/             sample trace (console tree + OTel JSON lines)
 
 ## Ecosystem recommendation (Part 2)
 
-The one-page recommendation to the Nebius exec team is in [docs/ecosystem-recommendation.md](docs/ecosystem-recommendation.md). It covers which three partners to prioritize, how to staff 4 FDEs, the trade-off, and one ask.
+The one-page recommendation to the Nebius exec team is in [docs/ecosystem-recommendation.pdf](docs/ecosystem-recommendation.pdf). The same text is also in [Markdown](docs/ecosystem-recommendation.md). It covers which three partners to prioritize, how to staff 4 FDEs, the trade-off, and one ask.
 
 ## How this was built
 

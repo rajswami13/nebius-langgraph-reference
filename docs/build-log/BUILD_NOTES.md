@@ -35,7 +35,11 @@ An independent review checked commit `df9913d`. We verified each finding before 
 | Results file overwritten, no provenance | Fixed. Results are now per client, with date, commit, packages, endpoint, command and failure details. |
 | Memo facts and claims | The Vercel model count was wrong (the live page shows 8, not 5). The "4–10×" inflation figure was too low: the saved probe shows 6–39×, growing with response length. Unsourced claims are now stated as assumptions. |
 
-Re-measuring also corrected one of our own claims. `tool_choice` on Kimi-K3 fails intermittently, not every time: a named tool was honored 3 times in 10 and "must call a tool" 0 times. A single conformance run can therefore show it passing. The README now cites these rates.
+Re-measuring also corrected one of our own claims. `tool_choice` on Kimi-K3 fails intermittently, not every time: a named tool was honored 2 times in 10 and "must call a tool" 0 times. A single conformance run can therefore show it passing. The README now cites these rates.
+
+A follow-up review found two more measurement problems, and both are fixed:
+- **Named-tool probe.** It counted any tool call as success, even a call to the wrong tool. It now requires the named tool and rejects malformed calls. Re-measured, Kimi-K3 honored a named tool 2 times in 10, and every failure was no call at all.
+- **Inflation probe.** It compared separate requests, so differences in output length leaked into the multiplier. It now captures one stream and replays the same chunks through both clients. The range is still 6–39×.
 
 ## Validation status (latest)
 
