@@ -1,0 +1,162 @@
+<title>Token Factory Ecosystem Plan</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: a single-column exec memo, ~720px measure; ordered partner list, two tables, ask set apart at the end */
+:root {
+  --paper: #f6f7f9;
+  --sheet: #ffffff;
+  --ink: #151a22;
+  --muted: #5b6575;
+  --rule: #dde1e8;
+  --accent: #2c55d6;
+  --accent-soft: #e7edfc;
+  --bad: #b4322a;
+  --bad-soft: #fbeceb;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", system-ui, sans-serif;
+  --body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #0f1218; --sheet: #161b23; --ink: #e7eaf0; --muted: #98a2b3; --rule: #2a313d;
+    --accent: #7d9cff; --accent-soft: #1d2740; --bad: #f08a80; --bad-soft: #2d1a1a; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #0f1218; --sheet: #161b23; --ink: #e7eaf0; --muted: #98a2b3; --rule: #2a313d;
+  --accent: #7d9cff; --accent-soft: #1d2740; --bad: #f08a80; --bad-soft: #2d1a1a; color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  background: var(--paper); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 64px;
+}
+.memo { max-width: 760px; margin: 0 auto; background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: clamp(20px, 5vw, 48px); display: grid; gap: 32px; }
+header { display: grid; gap: 10px; border-bottom: 2px solid var(--ink); padding-bottom: 20px; }
+.meta { display: flex; flex-wrap: wrap; gap: 6px 24px; font-size: 12.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.meta b { color: var(--ink); font-weight: 600; }
+h1 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 4.4vw, 36px); line-height: 1.1; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 13px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 12px; }
+h3 { font-family: var(--display); font-weight: 600; font-size: 20px; margin: 0; line-height: 1.2; }
+p { margin: 0; max-width: 68ch; }
+section { display: grid; gap: 12px; }
+.lede { font-size: 17px; }
+.lede strong { background: var(--accent-soft); padding: 0 3px; border-radius: 2px; }
+code, .mono { font-family: var(--mono); font-size: .86em; }
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 4px; }
+table { border-collapse: collapse; width: 100%; font-size: 13.5px; min-width: 560px; }
+th, td { text-align: left; vertical-align: top; padding: 9px 12px; border-bottom: 1px solid var(--rule); }
+th { font-family: var(--display); font-weight: 600; font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); background: var(--paper); }
+tr:last-child td { border-bottom: 0; }
+.where { white-space: nowrap; }
+.tag { display: inline-block; font-size: 11px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; }
+.tag.server { background: var(--bad-soft); color: var(--bad); }
+.tag.client { background: var(--accent-soft); color: var(--accent); }
+.tag.model { background: var(--paper); color: var(--muted); border: 1px solid var(--rule); }
+.partners { list-style: none; margin: 0; padding: 0; display: grid; gap: 20px; counter-reset: p; }
+.partner { display: grid; grid-template-columns: 44px 1fr; gap: 0 16px; counter-increment: p; }
+.partner::before { content: counter(p); font-family: var(--display); font-weight: 700; font-size: 34px; line-height: 1; color: var(--accent); }
+.partner > div { display: grid; gap: 8px; min-width: 0; }
+.when { font-family: var(--mono); font-size: 12px; color: var(--muted); }
+.give { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; }
+.give > div { border-top: 1px solid var(--rule); padding-top: 8px; font-size: 14px; }
+.give b { display: block; font-size: 11.5px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted); font-weight: 600; margin-bottom: 2px; }
+.ask { background: var(--ink); color: var(--sheet); border-radius: 4px; padding: 22px 24px; display: grid; gap: 8px; }
+.ask h2 { color: var(--sheet); opacity: .75; margin: 0; }
+.ask p { font-size: 15px; }
+.ask .big { font-family: var(--display); font-size: 21px; font-weight: 600; line-height: 1.25; }
+.foot { font-size: 12.5px; color: var(--muted); border-top: 1px solid var(--rule); padding-top: 14px; }
+.foot a, a { color: var(--accent); }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (max-width: 520px) { .partner { grid-template-columns: 1fr; } .partner::before { font-size: 26px; } }
+</style>
+
+<main class="memo">
+  <header>
+    <div class="meta"><span>To <b>Nebius exec team</b></span><span>From <b>Head of FDE, Ecosystem</b></span><span>Horizon <b>Next two quarters</b></span></div>
+    <h1>Listed everywhere, default nowhere: three partners to fix that</h1>
+  </header>
+
+  <section>
+    <h2>Bottom line</h2>
+    <p class="lede">Most agent frameworks already list Token Factory, but none treats it as the default, and a listing doesn't mean the integration works. <strong>For the next two quarters, turn three listings into certified, default-quality integrations, and build the machine that keeps ten of them working.</strong></p>
+    <p>Evidence: a 2.5-hour reference build on LangGraph found four issues that no listing or doc warns about.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Issue</th><th>Where</th><th>Impact</th></tr></thead>
+        <tbody>
+          <tr><td>Streamed responses over-report tokens 4–10×</td><td class="where"><span class="tag server">Server</span> 3 models</td><td>Partners' cost tracking and billing are wrong</td></tr>
+          <tr><td><code>tool_choice</code> accepted but silently ignored</td><td class="where"><span class="tag server">Server</span> Kimi-K3, gpt-oss</td><td>"Must call a tool" agent steps break</td></tr>
+          <tr><td>Two of three structured-output modes crash; no streamed usage</td><td class="where"><span class="tag client">Our SDK</span> <code>langchain-nebius</code> 0.1.3</td><td>Our flagship partnership ships a broken client</td></tr>
+          <tr><td>Model invents answers instead of calling tools</td><td class="where"><span class="tag model">Model</span> gemma-3-27b</td><td>Silent wrong answers</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>Three partners, in priority order</h2>
+    <p>Ranked by developer reach × tokens per developer × the gap between "listed" and "default."</p>
+    <ol class="partners">
+      <li class="partner"><div>
+        <h3>LangChain / LangGraph</h3>
+        <span class="when">Q1 · weeks 1–8</span>
+        <p>Largest agent framework. The partnership is already announced (Deep Agents), but the package underneath it is broken. That makes it the fastest path to revenue and the biggest risk if left alone.</p>
+        <div class="give">
+          <div><b>We deliver</b>A fixed <code>langchain-nebius</code> that we own, in LangChain's standard integration tests; tuned Deep Agents profiles; correct Nebius pricing in LangSmith.</div>
+          <div><b>Nebius offers</b>A named FDE owner with a bug SLA, inference credits for Deep Agents users, co-marketing at every open-model launch, and capacity for LangChain's own evals.</div>
+        </div>
+      </div></li>
+      <li class="partner"><div>
+        <h3>Vercel: AI SDK + AI Gateway</h3>
+        <span class="when">Start Q1 · land Q2</span>
+        <p>Reaches the TypeScript half of the agent market, and Gateway traffic is paid tokens that flow to us directly. Gateway lists only part of our catalog (5 models at last check, against 30 on Token Factory), and the AI SDK has no native Nebius provider.</p>
+        <div class="give">
+          <div><b>We deliver</b>Our full agent-capable catalog on Gateway, day-0 listings for new open models, a native AI SDK provider, and agent templates that deploy on Vercel.</div>
+          <div><b>Nebius offers</b>Wholesale pricing or a revenue share on Gateway traffic, committed rate limits, and early access to new models.</div>
+        </div>
+      </div></li>
+      <li class="partner"><div>
+        <h3>An open-source coding agent: Cline first, OpenCode as the alternate</h3>
+        <span class="when">Q2</span>
+        <p>Coding agents use the most tokens per developer, and they rely heavily on tool calls, which is where we found server bugs. Integrations shipped in Q3, but we're not yet the recommended provider.</p>
+        <div class="give">
+          <div><b>We deliver</b>Certified coding models (tool calls that pass the kit), a recommended Nebius preset in the agent, and latency tuning.</div>
+          <div><b>Nebius offers</b>Credits for the partner's users, fast-inference capacity for coding models, and a revenue share on referred tokens.</div>
+        </div>
+      </div></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Staffing: 4 FDEs</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>FDE</th><th>Q1</th><th>Q2</th></tr></thead>
+        <tbody>
+          <tr><td><b>Python frameworks</b></td><td>LangChain / LangGraph</td><td>PydanticAI, CrewAI, LlamaIndex, OpenAI Agents SDK (via the kit)</td></tr>
+          <tr><td><b>TypeScript &amp; platforms</b></td><td>Vercel AI SDK + Gateway</td><td>Mastra, n8n</td></tr>
+          <tr><td><b>Coding agents</b></td><td>Coding-model tool-call quality</td><td>Cline, then OpenCode</td></tr>
+          <tr><td><b>Ecosystem platform</b></td><td>Conformance kit runs nightly across every model × framework</td><td>Public compatibility page, partner self-certification, bug triage to the inference team</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p><b>How this reaches ten partners.</b> The four FDEs land the first three by hand. For partners 4–10 (OpenAI Agents SDK, PydanticAI, CrewAI, LlamaIndex, Mastra, n8n, OpenCode), each partner runs our conformance kit in its own CI, and FDE time is capped at roughly one week per partner. The OpenAI Agents SDK is cheap to add: Token Factory already answers the Responses API.</p>
+  </section>
+
+  <section>
+    <h2>The trade-off</h2>
+    <p>We go deep on three partners and put one of four FDEs on the platform instead of on a fourth partner. For two quarters, partners 4–10 get only self-serve support, and a competitor (Together, Fireworks, Groq) may win the default slot in a framework such as Mastra or n8n first. We accept that because a broken integration, like today's <code>langchain-nebius</code>, costs us more trust than a missing one.</p>
+  </section>
+
+  <section class="ask">
+    <h2>One ask</h2>
+    <p class="big">Make the conformance kit a release gate, with an owner on the inference team.</p>
+    <p>No model ships on Token Factory until it passes the kit, and compatibility bugs the kit finds get a 2-week fix SLA. Two of the four issues above are server-side. FDEs can work around a server bug in one framework, but not in ten.</p>
+  </section>
+
+  <p class="foot">Evidence, code and the full compatibility matrix: <a href="https://github.com/rajswami13/nebius-langgraph-reference" target="_blank" rel="noopener">github.com/rajswami13/nebius-langgraph-reference</a></p>
+</main>

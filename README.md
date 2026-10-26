@@ -181,3 +181,7 @@ conformance/        cases.py (neutral specs) · test_tool_calling.py · test_str
 scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py (usage bug repro)
 traces/             sample trace (console tree + OTel JSON lines)
 ```
+
+## Ecosystem recommendation (Part 2)
+
+The one-page recommendation to the Nebius exec team is in [docs/ecosystem-recommendation.md](docs/ecosystem-recommendation.md). It covers which three partners to prioritize, how to staff 4 FDEs, the trade-off, and one ask.
