@@ -41,6 +41,8 @@ A follow-up review found two more measurement problems, and both are fixed:
 - **Named-tool probe.** It counted any tool call as success, even a call to the wrong tool. It now requires the named tool and rejects malformed calls. Re-measured, Kimi-K3 honored a named tool 2 times in 10, and every failure was no call at all.
 - **Inflation probe.** It compared separate requests, so differences in output length leaked into the multiplier. It now captures one stream and replays the same chunks through both clients. The range is still 6–39×.
 
+**Demo rehearsal.** Adding a third, dependent tool exposed a fifth issue. Qwen3-235B ignores `parallel_tool_calls=False`, fires all three tools at once, and guesses the price. A one-line system-prompt rule ("call one tool at a time") fixed it (6 correct in 6 runs). It is documented as known issue 5 in the README.
+
 ## Validation status (latest)
 
 - **Offline unit tests:** 5 passed, also in GitHub Actions CI.

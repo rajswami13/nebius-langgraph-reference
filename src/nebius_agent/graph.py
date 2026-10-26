@@ -15,7 +15,9 @@ from nebius_agent.tools import TOOLS
 
 SYSTEM_PROMPT = (
     "You are a GPU cost assistant. Always use get_gpu_price to look up prices and "
-    "calculate for any arithmetic; never guess numbers. Keep answers short and show the math."
+    "calculate for any arithmetic; never guess numbers. Call one tool at a time and wait for its "
+    "result before the next call, because later steps depend on earlier results. "
+    "Keep answers short and show the math."
 )
 
 

@@ -161,6 +161,11 @@ These issues were found by the conformance kit and are reproducible with the scr
    - **Workaround:** Use `method="json_schema"` for structured output with these models.
 3. **gpt-oss-120b calls tools one at a time** instead of in parallel. It is functionally fine, but it adds latency to agent loops.
 4. **gemma-3-27b-it does not call tools in auto mode.** It answers with made-up data instead, for example inventing today's weather. Don't use it for tool-using agents.
+5. **`parallel_tool_calls=False` is ignored (Qwen3-235B).**
+   - **Server behavior:** With three dependent tools (price → calculate → convert), Qwen3-235B returned all three calls in one turn on every try, even with `parallel_tool_calls=False` ([evidence](evidence/parallel-tool-calls-probe.txt)). DeepSeek-V4.1-Flash, GLM-5.3, Kimi-K3, gpt-oss-120b and muse-spark-open each returned one call per turn. That is consistent with honoring the flag, though it can't be told apart from simply calling tools one at a time.
+   - **Effect:** The model guesses the inputs to later steps before it has seen earlier results. Found while rehearsing a "add a currency tool" change: the agent answered $2,592 instead of $2,016.
+   - **Workaround:** The agent's system prompt in [graph.py](src/nebius_agent/graph.py) tells the model to call one tool at a time and wait for each result. That produced 6 correct answers in 6 runs.
+   - **Reproduce:** `uv run python scripts/probe_parallel_tool_calls.py 3 <model>`.
 
 ## Running on Nebius infrastructure
 
@@ -200,7 +205,7 @@ src/nebius_agent/   llm.py (model factory + fix) · tools.py · graph.py (agent)
 tests/              offline unit tests (run in CI, no API key)
 conformance/        cases.py (neutral specs) · test_tool_calling.py · test_structured_output.py · test_streaming.py
 conformance/results/  latest live results per client, with provenance and failure details
-scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py · probe_tool_choice.py (issue repros)
+scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py · probe_tool_choice.py · probe_parallel_tool_calls.py (issue repros)
 evidence/           saved probe output backing the known-issues claims
 traces/             sample trace (console tree + OTel JSON lines)
 ```
