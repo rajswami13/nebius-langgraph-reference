@@ -1,72 +1,51 @@
-# Token Factory ecosystem: priorities for the next two quarters
+# Token Factory ecosystem: priorities for Q1–Q2 2027
 
-**To:** Nebius exec team · **Re:** which partners to prioritize, how to staff 4 FDEs, one ask
+**To:** Nebius exec team · **Evidence:** [github.com/rajswami13/nebius-langgraph-reference](https://github.com/rajswami13/nebius-langgraph-reference)
 
 ## Bottom line
 
-Most agent frameworks already **list** Token Factory, but none treats it as the default, and a listing doesn't guarantee a working integration. In a 2.5-hour reference build on LangGraph, I found four issues that no listing or doc warns about:
+Most agent frameworks list Token Factory, but a listing doesn't guarantee a working integration. A one-day LangGraph build found four defects that no listing warns about. **Over the next two quarters, turn three listings into certified integrations, and build the test system that keeps ten of them working.**
 
-| Issue | Where | Impact |
+| Defect | Where | Effect |
 |---|---|---|
-| Streamed responses over-report tokens 4–10× | Token Factory server (Qwen3-235B, gpt-oss-120b, gemma-3) | Partners' cost tracking and billing are wrong |
-| `tool_choice` accepted but silently ignored | Token Factory server (Kimi-K3, gpt-oss-120b) | "Must call a tool" agent steps break |
-| Two of three structured-output modes crash; no streamed usage | Our official `langchain-nebius` 0.1.3 | Our flagship partnership ships a broken client |
-| Model invents answers instead of calling tools | gemma-3-27b | Silent wrong answers |
-
-**Recommendation:** for the next two quarters, turn three listings into certified integrations that work by default, and build the machine that keeps ten of them working.
+| Usage repeated on every streamed chunk | Server: 3 models | SDK-reported token counts inflated 6–39×. Invoices not examined. |
+| `tool_choice` ignored, with no error | Server: Kimi-K3 (honored 0–3 of 10), gpt-oss-120b (0 of 10) | "Must call a tool" steps fail silently |
+| Two structured-output modes crash; streams report no usage | `langchain-nebius` 0.1.3 | Code ported from `ChatOpenAI` breaks |
+| Answers without calling tools | gemma-3-27b | Invented data |
 
 ## Three partners, in order
 
-Ranking criteria: developer reach × tokens per developer × the gap between "listed" and "default."
+The order reflects our assumptions about developer reach and token volume. We validate it in month 1 with partner-tagged usage.
 
-**1. LangChain / LangGraph (Q1).** Largest agent framework. The partnership is already announced (Deep Agents), but the package underneath it is broken, so this is the fastest path to revenue and the biggest risk if left alone.
-- **What we deliver:**
-  - fix `langchain-nebius` and take ownership of it;
-  - get it into LangChain's standard integration tests;
-  - tuned Deep Agents profiles for our top open models;
-  - correct Nebius pricing in LangSmith cost tracking.
-- **What Nebius offers:**
-  - a named FDE owner with a bug SLA on the package;
-  - inference credits for Deep Agents users;
-  - co-marketing at every open-model launch;
-  - capacity for LangChain's own evals.
-
-**2. Vercel: AI SDK + AI Gateway (start Q1, land Q2).** Reaches the TypeScript/Next.js half of the agent market, and Gateway traffic is paid tokens that flow to us directly. Today Gateway lists only part of our catalog (5 models at last check, against 30 on Token Factory), and the AI SDK has no native Nebius provider.
-- **What we deliver:**
-  - our full agent-capable catalog on Gateway;
-  - day-0 listings for new open models;
-  - a native AI SDK provider;
-  - agent templates that deploy on Vercel.
-- **What Nebius offers:**
-  - wholesale pricing or a revenue share on Gateway traffic;
-  - committed rate limits;
-  - early access to new models.
-
-**3. An open-source coding agent: Cline first, OpenCode as the alternate (Q2).** Coding agents use the most tokens per developer, and they rely heavily on tool calls, which is exactly where we found server bugs (for example, ignored `tool_choice` on Kimi models). The Q3 integrations exist; we're not the recommended provider yet.
-- **What we deliver:**
-  - certified coding models (tool calls that pass the kit);
-  - a recommended Nebius preset in the agent;
-  - latency tuning.
-- **What Nebius offers:**
-  - credits for the partner's users;
-  - fast-inference capacity for coding models;
-  - a revenue share on referred tokens.
+| Partner | Why | We deliver | Nebius offers | Partner commits |
+|---|---|---|---|---|
+| **1. LangChain / LangGraph** (Q1) | The partnership is announced; the SDK under it has the defects above | A fixed `langchain-nebius` that Nebius maintains, in LangChain's integration tests; Deep Agents profiles | A named owner with a bug SLA, credits for Deep Agents users, launch co-marketing | Placement as a recommended open-model provider; joint launches |
+| **2. Vercel AI SDK + Gateway** (start Q1, launch Q2) | Reaches TypeScript developers. Gateway traffic earns revenue only when routed to us. Gateway lists 8 Nebius models (25 Oct 2026) | Our agent-capable catalog on Gateway, day-0 open-model listings, a certified OpenAI-compatible path, templates | Wholesale pricing or a revenue share; committed rate limits | Routing preference for models we serve; distribution of the templates |
+| **3. Cline, with OpenCode as the alternate** (Q2) | Coding agents rely heavily on tool calls, where the server defects hurt most | Certified coding models, a Nebius preset, latency tuning | User credits, fast-inference capacity, a revenue share | Placement as a recommended provider |
 
 ## Staffing: 4 FDEs
 
-| FDE | Q1 | Q2 |
+| FDE | Q1 2027 | Q2 2027 |
 |---|---|---|
-| **1: Python frameworks** | LangChain / LangGraph | PydanticAI, CrewAI, LlamaIndex, OpenAI Agents SDK (via the kit) |
-| **2: TypeScript and platforms** | Vercel AI SDK + Gateway | Mastra, n8n |
-| **3: Coding agents** | Coding-model tool-call quality | Cline, then OpenCode |
-| **4: Ecosystem platform** | Conformance kit runs nightly across every model × framework | Public compatibility page, partner self-certification, bug triage to the inference team |
+| Python | LangChain | Maintain LangChain; PydanticAI, CrewAI, OpenAI Agents SDK* |
+| TypeScript | Vercel | Vercel launch, then Mastra |
+| Coding agents | Tool-call quality for coding models | Cline, then OpenCode |
+| Platform | Nightly conformance runs, models × frameworks | Public compatibility page; partner self-certification |
 
-**How this reaches ten partners:** the four FDEs land the first three by hand. For partners 4–10 (OpenAI Agents SDK, PydanticAI, CrewAI, LlamaIndex, Mastra, n8n, OpenCode), each partner runs our conformance kit in its own CI, and FDE time is capped at roughly one week per partner. The OpenAI Agents SDK is cheap to add: Token Factory already answers the Responses API.
+**Partners 4–10** get limited enablement: they run our test kit in their own CI, with at most one FDE-week each.
+
+\*Token Factory serves the stateless Responses API. Multi-turn and tool behavior are untested, so the Agents SDK estimate is provisional.
+
+**Success, per partner** (targets agreed with each partner in week 2):
+- the integration is released upstream and its docs are live;
+- activated developers, measured with partner-tagged keys;
+- weekly production integrations;
+- paid tokens that come through the partner.
 
 ## The trade-off
 
-We go deep on three partners and put one of four FDEs on the platform instead of on a fourth partner. The cost: for two quarters, partners 4–10 get only self-serve support, and a competitor (Together, Fireworks, Groq) may win the default slot in a framework such as Mastra or n8n first. We accept that because a broken integration, like today's `langchain-nebius`, costs us more trust than a missing one.
+We choose depth over breadth: one of the four FDEs builds the platform instead of landing a fourth partner. For two quarters, partners 4–10 get only limited enablement, and a competitor may win the default slot in Mastra or n8n first. We accept that because a broken integration costs more trust than a missing one.
 
 ## One ask
 
-**Make the conformance kit a release gate, with an owner on the inference team.** No model ships on Token Factory until it passes the kit, and compatibility bugs the kit finds get a 2-week fix SLA. Two of the four issues above are server-side. FDEs can work around a server bug in one framework, but not in ten.
+**A capability-based release gate, owned by the inference team.** Each model must pass the checks for the capabilities it advertises before launch, and models marketed for agents must pass the full agent-ready suite. Severity-1 compatibility bugs get fixed within 2 weeks, and exceptions need the inference lead's sign-off. Two of the four defects above are server-side. FDEs can work around a server bug in one framework, but not in ten.
