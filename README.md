@@ -2,6 +2,13 @@
 
 A working LangGraph agent running on [Nebius Token Factory](https://tokenfactory.nebius.com), with OpenTelemetry tracing and a test suite that checks tool calling, structured output and streaming through LangChain's abstractions, model by model.
 
+**The use case: a GPU cost assistant.** Ask a question in plain English ("How much would 8 H200s for 72 hours cost?"). The agent looks up the GPU price with one tool, does the arithmetic with a second, and shows its working. It's small on purpose:
+- A cost question needs a lookup, then a calculation that depends on it, so it exercises a multi-step, dependent tool loop rather than a single call.
+- The model can't guess the answer, so a wrong number shows a tool-calling failure.
+- It relates to Nebius's own business (GPU-hours).
+
+Prices are mock values, not Nebius pricing.
+
 **What you get**
 
 - **Reference agent** ([src/nebius_agent/graph.py](src/nebius_agent/graph.py)): a LangGraph tool loop with two tools, a price lookup and a calculator. It runs on tool-capable Token Factory models (see [Model compatibility](#model-compatibility)).
