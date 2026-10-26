@@ -70,6 +70,11 @@ def pytest_sessionfinish(session):
 
 @pytest.fixture
 def llm(model):
+    # NEBIUS_CLIENT=langchain-nebius runs the same checks against the official ChatNebius package
+    if os.getenv("NEBIUS_CLIENT") == "langchain-nebius":
+        from langchain_nebius import ChatNebius
+
+        return ChatNebius(model=model, temperature=0, max_tokens=1024)
     from nebius_agent.llm import make_chat_model
 
     return make_chat_model(model, max_tokens=1024)

@@ -74,6 +74,24 @@ llm = ChatOpenAI(
 )
 ```
 
+### Why not the official `langchain-nebius` package?
+
+We ran the same conformance kit against `langchain-nebius` 0.1.3 (`ChatNebius`) on Qwen3-235B, DeepSeek-V4.1-Flash and GLM-5.3:
+
+```bash
+NEBIUS_CLIENT=langchain-nebius uv run --with langchain-nebius pytest -n 8
+```
+
+| check | `ChatOpenAI` + our factory | `ChatNebius` 0.1.3 |
+|---|---|---|
+| tool calling (single, parallel, forced, round-trip) | ✅ | ✅ |
+| structured output, `function_calling` | ✅ | ✅ |
+| structured output, `json_schema` / `json_mode` | ✅ | ❌ crashes: `root_client` is never set, so LangChain's `.parse()` path has no client |
+| token usage on streamed calls | ✅ | ❌ none reported (`stream_usage` not enabled) |
+| default endpoint | `api.tokenfactory.nebius.com` | `api.studio.nebius.ai` (legacy domain) |
+
+`ChatNebius` defaults to `method="function_calling"`, which works. However, `ChatOpenAI` defaults to `json_schema`, so code ported from OpenAI, or code that asks for `json_schema` explicitly, crashes on `ChatNebius`. These fixes should go upstream into `langchain-nebius`. Until then, use `make_chat_model()`.
+
 ## Tracing
 
 Every run prints its trace. To view traces in a UI, run any OTLP backend. For example, [Arize Phoenix](https://github.com/Arize-ai/phoenix):
