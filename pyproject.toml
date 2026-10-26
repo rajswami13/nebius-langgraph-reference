@@ -1,0 +1,35 @@
+[project]
+name = "nebius-langgraph-reference"
+version = "0.1.0"
+description = "Reference LangGraph agent on Nebius Token Factory, with OpenTelemetry tracing and a conformance kit"
+requires-python = ">=3.12"
+dependencies = [
+    "langchain-openai>=1.7.2",
+    "langgraph>=1.2.17",
+    "openai>=3.37.0",
+    "openinference-instrumentation-langchain>=0.1.80",
+    "opentelemetry-exporter-otlp-proto-http>=1.45.1",
+    "opentelemetry-sdk>=1.45.1",
+    "pydantic>=2.14.1",
+    "python-dotenv>=1.2.4",
+]
+
+[project.scripts]
+nebius-agent = "nebius_agent.cli:main"
+
+[build-system]
+requires = ["uv_build>=0.13.5,<0.14.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "pytest-xdist>=3.8.0",
+]
+
+[tool.uv.build-backend]
+module-name = "nebius_agent"
+
+[tool.pytest.ini_options]
+testpaths = ["conformance"]
+addopts = "-q"

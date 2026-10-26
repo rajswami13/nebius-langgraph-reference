@@ -1,0 +1,23 @@
+  [tool call] get_gpu_price({'gpu_type': 'H200'})
+  [tool result] get_gpu_price -> H200: $3.50 per GPU-hour (mock price)
+  [tool call] calculate({'expression': '8 * 72 * 3.5'})
+  [tool result] calculate -> 2016.0
+
+Running 8 H200 GPUs for 72 hours would cost $2,016.  
+(8 GPUs × 72 hours × $3.50 per GPU-hour)
+
+trace_id=e3e359ef20cc43b241bee4713b8ee643  spans=14
+[CHAIN] LangGraph (2743 ms)
+  [AGENT] agent (864 ms)
+    [LLM] NebiusChatOpenAI (862 ms) model=Qwen/Qwen3-235B-A22B-Instruct-2507 tokens=310+25 -> tool_calls=['get_gpu_price']
+    [CHAIN] tools_condition (0 ms)
+  [CHAIN] tools (1 ms)
+    [TOOL] get_gpu_price (0 ms) args='H200' result='H200: $3.50 per GPU-hour (mock price)'
+  [AGENT] agent (603 ms)
+    [LLM] NebiusChatOpenAI (601 ms) model=Qwen/Qwen3-235B-A22B-Instruct-2507 tokens=364+28 -> tool_calls=['calculate']
+    [CHAIN] tools_condition (0 ms)
+  [CHAIN] tools (1 ms)
+    [TOOL] calculate (1 ms) args='8 * 72 * 3.5' result='2016.0'
+  [AGENT] agent (1268 ms)
+    [LLM] NebiusChatOpenAI (1265 ms) model=Qwen/Qwen3-235B-A22B-Instruct-2507 tokens=411+42
+    [CHAIN] tools_condition (0 ms)
