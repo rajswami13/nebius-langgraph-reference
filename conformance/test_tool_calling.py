@@ -49,10 +49,10 @@ def test_tool_result_roundtrip(llm):
     assert cases.ROUNDTRIP_EXPECT in final.content, f"answer ignored the tool result: {final.content[:200]!r}"
 
 
-def test_langgraph_agent_end_to_end(model):
+def test_langgraph_agent_end_to_end(llm):
     from nebius_agent.graph import build_agent
 
-    result = build_agent(model).invoke(
+    result = build_agent(llm=llm).invoke(
         {"messages": [("user", cases.AGENT_PROMPT)]}, {"configurable": {"thread_id": "conformance"}}
     )
     used = {m.name for m in result["messages"] if m.type == "tool"}

@@ -1,0 +1,27 @@
+endpoint: https://api.tokenfactory.nebius.com/v1
+prompt: 'Count from 1 to 10.'
+
+Qwen/Qwen3-235B-A22B-Instruct-2507
+  raw    chunks=11 chunks_with_usage=11 final=17+31
+  plain  ChatOpenAI       usage=187+182   (11.0x in, 5.9x out vs fixed)
+  fixed  NebiusChatOpenAI usage=17+31
+openai/gpt-oss-120b
+  raw    chunks=30 chunks_with_usage=30 final=75+77
+  plain  ChatOpenAI       usage=2250+1243   (30.0x in, 20.4x out vs fixed)
+  fixed  NebiusChatOpenAI usage=75+61
+google/gemma-3-27b-it
+  raw    chunks=40 chunks_with_usage=40 final=18+38
+  plain  ChatOpenAI       usage=702+740   (39.0x in, 20.0x out vs fixed)
+  fixed  NebiusChatOpenAI usage=18+37
+moonshotai/Kimi-K3
+  raw    chunks=16 chunks_with_usage=1 final=93+73
+  plain  ChatOpenAI       usage=93+100   (1.0x in, 1.0x out vs fixed)
+  fixed  NebiusChatOpenAI usage=93+100
+deepseek-ai/DeepSeek-V4.1-Flash
+  raw    chunks=23 chunks_with_usage=1 final=38+83
+  plain  ChatOpenAI       usage=38+83   (1.0x in, 1.0x out vs fixed)
+  fixed  NebiusChatOpenAI usage=38+83
+zai-org/GLM-5.3
+  raw    chunks=30 chunks_with_usage=1 final=20+100
+  plain  ChatOpenAI       usage=20+100   (1.0x in, 1.0x out vs fixed)
+  fixed  NebiusChatOpenAI usage=20+100

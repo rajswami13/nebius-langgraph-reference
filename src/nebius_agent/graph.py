@@ -19,8 +19,9 @@ SYSTEM_PROMPT = (
 )
 
 
-def build_agent(model: str | None = None, checkpointer=None):
-    llm = make_chat_model(model).bind_tools(TOOLS)
+def build_agent(model: str | None = None, checkpointer=None, llm=None):
+    """Build the agent. Pass `llm` to use any LangChain chat model instead of the default factory."""
+    llm = (llm or make_chat_model(model)).bind_tools(TOOLS)
 
     def agent(state: MessagesState):
         return {"messages": [llm.invoke([SystemMessage(SYSTEM_PROMPT), *state["messages"]])]}

@@ -9,10 +9,12 @@ import time
 
 from dotenv import load_dotenv
 from openai import OpenAI
+
+from nebius_agent.llm import NEBIUS_BASE_URL
 import os
 
 load_dotenv()
-client = OpenAI(base_url="https://api.tokenfactory.nebius.com/v1", api_key=os.environ["NEBIUS_API_KEY"])
+client = OpenAI(base_url=NEBIUS_BASE_URL, api_key=os.environ["NEBIUS_API_KEY"])
 
 TOOLS = [{
     "type": "function",

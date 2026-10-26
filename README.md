@@ -4,10 +4,10 @@ A working LangGraph agent running on [Nebius Token Factory](https://tokenfactory
 
 **What you get**
 
-- **Reference agent** ([src/nebius_agent/graph.py](src/nebius_agent/graph.py)): a LangGraph tool loop with two tools, a price lookup and a calculator. It runs on any Token Factory model.
+- **Reference agent** ([src/nebius_agent/graph.py](src/nebius_agent/graph.py)): a LangGraph tool loop with two tools, a price lookup and a calculator. It runs on tool-capable Token Factory models (see [Model compatibility](#model-compatibility)).
 - **Drop-in model factory** ([src/nebius_agent/llm.py](src/nebius_agent/llm.py)): `make_chat_model()` returns a LangChain chat model already pointed at Token Factory. It includes a fix for a streaming token-usage issue (see [Known issues](#known-issues)).
 - **Tracing** ([src/nebius_agent/tracing.py](src/nebius_agent/tracing.py)): OpenTelemetry spans via OpenInference. Every run prints a span tree to the console, and if you configure an endpoint it also sends spans over OTLP to Phoenix, Langfuse, Jaeger, Grafana or Datadog.
-- **Conformance kit** ([conformance/](conformance/)): 13 checks × N models. The output is a pass/fail matrix in [conformance/RESULTS.md](conformance/RESULTS.md).
+- **Conformance kit** ([conformance/](conformance/)): 13 checks × N models, run live against Token Factory. Each run writes a dated pass/fail matrix with failure details to [conformance/results/](conformance/results/).
 
 ## Quickstart (5 minutes)
 
@@ -47,7 +47,14 @@ More options:
 ```bash
 uv run nebius-agent "Compare 4 B200s vs 8 H100s for 24 hours"   # your own question
 uv run nebius-agent --stream                                      # stream tokens
-uv run nebius-agent --model moonshotai/Kimi-K3                    # any Token Factory model
+uv run nebius-agent --model moonshotai/Kimi-K3                    # another tool-capable model
+```
+
+Check that everything works:
+
+```bash
+uv run pytest tests                                                  # offline unit tests, no API key needed
+NEBIUS_TEST_MODELS="Qwen/Qwen3-235B-A22B-Instruct-2507" uv run pytest conformance -k end_to_end   # live smoke test
 ```
 
 ## Use it in your own code
@@ -65,6 +72,8 @@ llm.with_structured_output(MySchema).invoke("...")
 Or use plain `ChatOpenAI`:
 
 ```python
+import os
+
 from langchain_openai import ChatOpenAI
 
 llm = ChatOpenAI(
@@ -76,15 +85,16 @@ llm = ChatOpenAI(
 
 ### Why not the official `langchain-nebius` package?
 
-We ran the same conformance kit against `langchain-nebius` 0.1.3 (`ChatNebius`) on Qwen3-235B, DeepSeek-V4.1-Flash and GLM-5.3:
+We ran the same conformance kit against `langchain-nebius` 0.1.3 (`ChatNebius`) on Qwen3-235B, DeepSeek-V4.1-Flash and GLM-5.3. Full results: [conformance/results/langchain-nebius.md](conformance/results/langchain-nebius.md).
 
 ```bash
-NEBIUS_CLIENT=langchain-nebius uv run --with langchain-nebius pytest -n 8
+NEBIUS_CLIENT=langchain-nebius NEBIUS_TEST_MODELS="Qwen/Qwen3-235B-A22B-Instruct-2507,deepseek-ai/DeepSeek-V4.1-Flash,zai-org/GLM-5.3" \
+  uv run --with langchain-nebius==0.1.3 pytest conformance -n 8 -k "not server_usage"
 ```
 
 | check | `ChatOpenAI` + our factory | `ChatNebius` 0.1.3 |
 |---|---|---|
-| tool calling (single, parallel, forced, round-trip) | ✅ | ✅ |
+| tool calling (single, parallel, forced, round-trip) and the LangGraph agent end to end | ✅ | ✅ |
 | structured output, `function_calling` | ✅ | ✅ |
 | structured output, `json_schema` / `json_mode` | ✅ | ❌ crashes: `root_client` is never set, so LangChain's `.parse()` path has no client |
 | token usage on streamed calls | ✅ | ❌ none reported (`stream_usage` not enabled) |
@@ -108,11 +118,11 @@ Spans follow the [OpenInference](https://github.com/Arize-ai/openinference) sema
 Run the conformance kit yourself (about 30 seconds):
 
 ```bash
-uv run pytest -n 8                                               # default 7 models
-NEBIUS_TEST_MODELS="zai-org/GLM-5.3,moonshotai/Kimi-K3" uv run pytest -n 8
+uv run pytest conformance -n 8                                    # default 7 models
+NEBIUS_TEST_MODELS="zai-org/GLM-5.3,moonshotai/Kimi-K3" uv run pytest conformance -n 8
 ```
 
-Results from the latest run (full matrix in [conformance/RESULTS.md](conformance/RESULTS.md)):
+Results from the latest run (full matrix, provenance and failure details in [conformance/results/chatopenai.md](conformance/results/chatopenai.md)):
 
 | capability (via LangChain) | Qwen3-235B | Kimi-K3 | DeepSeek-V4.1-Flash | GLM-5.3 | gpt-oss-120b | muse-spark-open | gemma-3-27b |
 |---|---|---|---|---|---|---|---|
@@ -125,7 +135,9 @@ Results from the latest run (full matrix in [conformance/RESULTS.md](conformance
 | streaming text and tool calls | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ❌ |
 | streamed token usage correct | ✅* | ✅ | ✅ | ✅ | ✅* | ✅ | ✅* |
 
-\* Correct only with the fix in `make_chat_model()`.
+\* Correct only with the fix in `make_chat_model()`. ⚠️ Passed in the latest run but failed in an earlier one, so it's inconsistent.
+
+Not every model passing every check is expected: the matrix shows which models to pick for agents.
 
 **Recommended for agents:** Qwen3-235B-A22B-Instruct-2507 (fast, passes everything), DeepSeek-V4.1-Flash, GLM-5.3 or muse-spark-open.
 
@@ -133,10 +145,10 @@ Results from the latest run (full matrix in [conformance/RESULTS.md](conformance
 
 These issues were found by the conformance kit and are reproducible with the scripts in [scripts/](scripts/).
 
-1. **Streamed token usage is over-counted 4–10× (Qwen3-235B, gpt-oss-120b, gemma-3-27b).**
+1. **Streamed token usage is over-counted by client SDKs (Qwen3-235B, gpt-oss-120b, gemma-3-27b).**
    - **Server behavior:** These models attach cumulative `usage` to every streamed chunk. The OpenAI spec sends it once, on the final chunk.
-   - **Effect:** LangChain sums usage across chunks, so cost tracking in LangSmith, Langfuse or your own billing over-reports.
-   - **Fix:** `NebiusChatOpenAI` in [llm.py](src/nebius_agent/llm.py) drops usage from content chunks.
+   - **Effect:** LangChain sums usage across chunks, so the inflation grows with response length: 6–39× on a short prompt in [our probe](evidence/stream-usage-probe.txt). Any token count computed client-side (LangSmith, Langfuse, your own dashboards) is wrong. We have not examined Nebius invoices, which are computed server-side.
+   - **Fix:** `NebiusChatOpenAI` in [llm.py](src/nebius_agent/llm.py) drops usage from content chunks. [tests/test_offline.py](tests/test_offline.py) shows the fix and the bug with synthetic chunks.
    - **Reproduce:** `uv run python scripts/probe_stream_usage.py <model>`.
    - **Server-side fix needed:** yes.
 2. **`tool_choice` is silently ignored (Kimi-K3, gpt-oss-120b).**
@@ -148,6 +160,10 @@ These issues were found by the conformance kit and are reproducible with the scr
 
 ## Running on Nebius infrastructure
 
+**What exists today:** the [Dockerfile](Dockerfile) packages the CLI, which answers one question and exits. That fits a Kubernetes Job or a batch run as-is. The Dockerfile has not been built yet, because Docker wasn't available where this was written.
+
+**Proposed production architecture.** This isn't built; it shows how the same graph would run as a service:
+
 ```
              ┌──────────────────────── Nebius Managed Kubernetes ────────────────────────┐
  client ───▶ │  agent pods (this image, stateless, HPA)  ──OTLP──▶  OTel Collector ──▶ Phoenix / Langfuse
@@ -158,14 +174,14 @@ These issues were found by the conformance kit and are reproducible with the scr
              └──────────────────────────────────────────────────────────────────────────┘
 ```
 
-- **Agent runtime:** a container image built from the [Dockerfile](Dockerfile), deployed on Nebius Managed Kubernetes behind a service. Pods are stateless, so they scale out horizontally on CPU nodes. The agent itself needs no GPUs, because inference happens in Token Factory.
+- **Agent runtime:** the same `build_agent()` graph behind a small HTTP or queue-worker wrapper, which this repo does not include. That wrapper adds health checks and request timeouts, and it is deployed on Nebius Managed Kubernetes behind a service. Pods hold no state, so they scale out horizontally on CPU nodes. The agent itself needs no GPUs, because inference happens in Token Factory.
 - **State:** swap `InMemorySaver` for `langgraph-checkpoint-postgres` backed by Nebius Managed PostgreSQL. Conversations (`thread_id`) then survive pod restarts and can resume on any replica.
 - **Models:** Token Factory over HTTPS from inside the same cloud. The API key is stored in a Kubernetes Secret.
 - **Observability:** an OTel Collector receives the OTLP spans and forwards them to Phoenix or Langfuse running on the same cluster, or to any vendor you choose.
 - **Scaling knobs:** pod autoscaling on request concurrency, Token Factory rate limits per key, and model choice per node (for example, a fast model for routing and a large one for reasoning).
 
 ```bash
-docker build -t nebius-agent .
+docker build -t nebius-agent .            # untested, see above
 docker run --rm -e NEBIUS_API_KEY nebius-agent "How much do 2 B200s cost for a week?"
 ```
 
@@ -177,8 +193,11 @@ docker run --rm -e NEBIUS_API_KEY nebius-agent "How much do 2 B200s cost for a w
 
 ```
 src/nebius_agent/   llm.py (model factory + fix) · tools.py · graph.py (agent) · tracing.py · cli.py
-conformance/        cases.py (neutral specs) · test_tool_calling.py · test_structured_output.py · test_streaming.py · RESULTS.md
+tests/              offline unit tests (run in CI, no API key)
+conformance/        cases.py (neutral specs) · test_tool_calling.py · test_structured_output.py · test_streaming.py
+conformance/results/  latest live results per client, with provenance and failure details
 scripts/            probe_raw.py (raw-SDK tool-call baseline) · probe_stream_usage.py (usage bug repro)
+evidence/           saved probe output backing the known-issues claims
 traces/             sample trace (console tree + OTel JSON lines)
 ```
 

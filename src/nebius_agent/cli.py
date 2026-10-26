@@ -6,6 +6,8 @@
 import argparse
 import uuid
 
+from dotenv import load_dotenv
+
 from nebius_agent.tracing import dump_trace, print_trace, setup_tracing
 
 DEFAULT_QUESTION = "How much would it cost to run 8 H200 GPUs for 72 hours?"
@@ -19,6 +21,7 @@ def main() -> None:
     p.add_argument("--dump-trace", metavar="PATH", help="also write the trace as JSON lines")
     args = p.parse_args()
 
+    load_dotenv()  # before setup_tracing(), so an OTLP endpoint set in .env is honored
     setup_tracing()  # must run before the graph is built so LangChain is instrumented
     from nebius_agent.graph import build_agent
 
