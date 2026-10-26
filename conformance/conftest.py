@@ -70,7 +70,7 @@ def _provenance() -> list[str]:
         except OSError:
             return ""
 
-    dirty = git("status", "--porcelain", "--", ".", ":!conformance/results")  # ignore this run's own output
+    dirty = git("status", "--porcelain", "--", ":/", ":(top,exclude)conformance/results")  # ignore this run's own output
     commit = git("rev-parse", "--short", "HEAD") + (" (uncommitted changes)" if dirty else "")
     endpoint = NEBIUS_BASE_URL
     if CLIENT == "langchain-nebius":
